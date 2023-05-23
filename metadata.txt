@@ -1,0 +1,10 @@
+[general]
+name=3DFin
+email=carloscabo@uniovi.es
+author=Carlos Cabo
+qgisMinimumVersion=3.28
+description=Automatic dendrometry and forest inventory for terrestrial point clouds
+about=Automatic dendrometry and forest inventory for terrestrial point clouds
+version=version 0.1.0
+repository=https://github.com/3DFin/3DFin
+tracker=https://github.com/3DFin/3DFin
