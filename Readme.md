@@ -9,27 +9,21 @@ QGIS Plugin installation with external dependencies suffers from multiple issues
 threads.
  - https://github.com/qgis/QGIS-Enhancement-Proposals/issues/179
  - https://github.com/opengisch/QgisModelBaker/pull/644
-For the possible collision in dependencies, the same may apply to CloudComparet context but the latter offer 
+For the possible collision in dependencies issue, the same may apply to CloudCompare context but the latter offers 
 the advantage of having a mechanism to handle virtual environements. Hopefully, at this point, dependencies installed 
-by 3DFin should not collides with one from OSGEO4W.
+by 3DFin should not collides with one provided by OSGEO4W.
 
 
 On Windows you should rely on OSGEO4W distribution since the QGIS desktop installer does not ship with Tkinter.
 the following package needs to be installed from OSGEO4W installer.
 ```    
 python3-pip
-python3-tcltk
-qgis or qgis-nigtly, see below.
+qgis
 ```
-
-If you have an HDPi display you need at least QGIS 3.32 that come with a fix on scaling issue. Thus, as of may 2023,
-you need to install nightly build of QGIS in OSGeo (and not 3.30). The fix is not fully operant (unlike in CloudCompare).
-A PyQT version of 3DFin is under developement and should remove the need of tricky HDPI fix and remove the dependency on
-TK.
-
 Clone the 3DFin git repository somewhere on your computer (note that this step won't be necessary once 3DFin will be available on PyPi)
 ```console
 git clone https://github.com/3DFin/3DFin.git
+git checkout pyqt_pydantic_introspection
 ```
 
 Then open the OSGEO4W console and install dependencies with pip
