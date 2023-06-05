@@ -31,7 +31,7 @@ Then open the OSGEO4W console and install dependencies with pip
 python -m pip install path_to_3DFin_repository
 ```
 
-On Linux just pip install 3DFin and install the python-tcltk package and QGIS too from your package manager. Please refer to your distribution documentation
+On Linux just pip install 3DFin and install and QGIS too from your package manager. Please refer to your distribution documentation
 to know how to. On macOS the process should be roughly the same.
 
 Then clone this repository and zip the folder and in QGIS use the Plugins > Manage and Install Plugins > Install From Zip. 
