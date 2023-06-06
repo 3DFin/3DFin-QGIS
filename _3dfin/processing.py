@@ -60,6 +60,9 @@ class QGISLASProcessing(StandaloneLASProcessing):
                 node_layer = project_instance.layerTreeRoot().findLayer(layer.id())
                 node_layer.setItemVisibilityChecked(False)
 
+    def _pre_processing_hook(self):
+        return super()._pre_processing_hook()
+    
     def _post_processing_hook(self):
         """Load resulting point clouds on QGIS"""
         self._load_cloud(self.dtm_path, "DTM", False)
