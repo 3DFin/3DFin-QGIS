@@ -9,9 +9,9 @@ from qgis.core import QgsPointCloudLayer, QgsProject
 
 
 class QGISLASProcessing(StandaloneLASProcessing):
-    """Implement the FinProcessing interface for LAS files QGIS execution context.
+    """Implement the FinProcessing interface for LAS files in QGIS execution context.
     
-    Since we are working on filesytem it's basically the same as the standalone.
+    Since we are working on filesystem/LAS files it inherit from StandaloneLAS Processing
     """
 
     def __init__(self, filename, qgis_instance):
@@ -32,6 +32,9 @@ class QGISLASProcessing(StandaloneLASProcessing):
         self.circ_path = str(self.output_basepath) + "_circ.las"
         self.axes_path = str(self.output_basepath) + "_axes.las"
         self.tree_locator_path = str(self.output_basepath) + "_tree_locator.las"
+    
+    def _load_base_cloud(self):
+        self.base_cloud = laspy.read(str(self.filename))
 
     def _load_cloud(self, path: str, name: str, visible: bool = True):
         """Load individual an point cloud into QGIS
@@ -57,7 +60,7 @@ class QGISLASProcessing(StandaloneLASProcessing):
                 node_layer = project_instance.layerTreeRoot().findLayer(layer.id())
                 node_layer.setItemVisibilityChecked(False)
 
-    def _post_processing_hook(self):  # touched
+    def _post_processing_hook(self):
         """Load resulting point clouds on QGIS"""
         self._load_cloud(self.dtm_path, "DTM", False)
         self._load_cloud(self.stripe_path, "Stems in stripe", False)
@@ -67,5 +70,3 @@ class QGISLASProcessing(StandaloneLASProcessing):
         self._load_cloud(self.axes_path, "Axes")
         self._load_cloud(self.tree_locator_path, "Tree locator", False)
 
-    def _load_base_cloud(self):
-        self.base_cloud = laspy.read(str(self.filename))  # touched
