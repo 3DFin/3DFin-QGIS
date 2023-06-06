@@ -1,10 +1,12 @@
 from PyQt5.QtWidgets import QAction, QMessageBox
 from PyQt5.QtCore import QEventLoop
-from qgis.core import QgsMapLayerType, QgsTask, QgsApplication
+from qgis.core import QgsMapLayerType
 
 from three_d_fin.gui.application import Application
 
 from ._3dfin.processing import QGISLASProcessing
+
+from pathlib import Path
 
 
 def classFactory(iface):
@@ -13,6 +15,7 @@ def classFactory(iface):
 
 def _create_app_and_run(plugin_processing: QGISLASProcessing, scalar_fields: list[str]):
     """Encapsulate the 3DFin GUI and processing.
+    
     Parameters
     ----------
     plugin_processing : CloudComparePluginProcessing
@@ -29,7 +32,10 @@ def _create_app_and_run(plugin_processing: QGISLASProcessing, scalar_fields: lis
     plugin_widget.show()
     plugin_widget.set_event_loop(loop)
     loop.exec_()
-class _3DFinQGIS:
+
+class _3DFinQGIS(object):
+    is_running:bool = False
+
     def __init__(self, iface):
         self.iface = iface
 
@@ -53,6 +59,11 @@ class _3DFinQGIS:
         del self.action
 
     def run(self):
+        if self.is_running:
+            QMessageBox.information(
+                None, "3DFin Plugin", "Another 3DFin instance is already running"
+            )
+            return
         layers = self.iface.layerTreeView().selectedLayers()
         if (
             len(layers) == 0
@@ -64,6 +75,7 @@ class _3DFinQGIS:
             )
             return
         else:
+            self.is_running = True
             pc_layer = layers[0]
 
             # get file path needed for the 3DFin processing implementation
@@ -74,5 +86,9 @@ class _3DFinQGIS:
             attribute_names = [attribute.name() for attribute in attributes]
 
             plugin_processing = QGISLASProcessing(Path(file_path), self.iface)
-            # fin_task = QgsTask.fromFunction("3DFin processing", _create_app_and_run, plugin_processing, attribute_names)
-            _create_app_and_run(plugin_processing, attribute_names)
+            try:
+                _create_app_and_run(plugin_processing, attribute_names)
+            except Exception as e:
+                raise e
+            finally:
+                self.is_running = False
