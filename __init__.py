@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QAction, QMessageBox
+from PyQt5.QtWidgets import QAction, QMessageBox, QDockWidget
 from PyQt5.QtCore import QEventLoop
-from qgis.core import QgsMapLayerType
+from qgis.core import QgsMapLayerType, QgsApplication
 
 from three_d_fin.gui.application import Application
 
@@ -15,11 +15,11 @@ def classFactory(iface):
 
 def _create_app_and_run(plugin_processing: QGISLASProcessing, scalar_fields: list[str]):
     """Encapsulate the 3DFin GUI and processing.
-    
+
     Parameters
     ----------
-    plugin_processing : CloudComparePluginProcessing
-        The instance of FinProcessing dedicated to CloudCompare (as a plugin)
+    plugin_processing : QGISLASProcessing
+        The instance of FinProcessing dedicated to QGIS (as a plugin)
     scalar_fields : list[str]
         A list of scalar field names. These list will feed the dropdown menu
         inside the 3DFin GUI.
@@ -75,6 +75,16 @@ class _3DFinQGIS(object):
             )
             return
         else:
+            # Shows python console. it's is needed as long as Dendromatics / 3DFin  use 
+            # print functions instead of a proper logging management.
+            from console import console
+            if not console._console:
+                self.iface.actionShowPythonDialog().trigger()
+                console._console.setVisible(console._console.isUserVisible())
+            # Process events now in order to shows console before 3DFin Dialog
+            # Else 3DFin dialog could be put into the background
+            QgsApplication.instance().processEvents()
+            
             self.is_running = True
             pc_layer = layers[0]
 
