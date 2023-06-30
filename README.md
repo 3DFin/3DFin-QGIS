@@ -1,7 +1,7 @@
 # 3DFin QGIS plugin
 
 This is a proof of concept of QGIS plugin for 3DFin processing. It will eventually be part of the 3DFin directory.
-Build will be managed by https://pypi.org/project/hatch-zipped-directory/
+for now build is managed by https://pypi.org/project/hatch-zipped-directory/ but the root directory could be zipped by anything :).
 
 ## Installation
 
@@ -19,9 +19,13 @@ python -m pip install 3DFin
 ```
 
 On Linux just pip install `3DFin` and install `QGIS` from your package manager. Please refer to your distribution documentation
-to know how. On macOS the process should be roughly the same.
+to know how. On macOS the process should be roughly the same. Then clone this repository and zip the folder.
 
-Then clone this repository and zip the folder. In QGIS use the `Plugins > Manage and Install Plugins > Install From Zip`.
+```console
+hatch build --target zipped-directory
+```
+
+In QGIS use the `Plugins > Manage and Install Plugins > Install From Zip`.
 
 ## How to use?
 

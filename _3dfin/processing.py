@@ -9,7 +9,7 @@ from three_d_fin.processing.standalone_processing import StandaloneLASProcessing
 class QGISLASProcessing(StandaloneLASProcessing):
     """Implement the FinProcessing interface for LAS files in QGIS execution context.
 
-    Since we are working on filesystem/LAS files it inherit from StandaloneLAS Processing
+    Since we are working on filesystem/LAS files it inherit from StandaloneLASProcessing
     """
 
     def __init__(self, filename, qgis_instance, config):
@@ -25,7 +25,9 @@ class QGISLASProcessing(StandaloneLASProcessing):
         self.output_basepath = Path(self.config.misc.output_dir) / Path(basename_las)
         self.dtm_path = str(self.output_basepath) + "_dtm_points.las"
         self.stripe_path = str(self.output_basepath) + "_stripe.las"
-        self.tree_id_dist_axes_path = str(self.output_basepath) + "_tree_ID_dist_axes.las"
+        self.tree_id_dist_axes_path = (
+            str(self.output_basepath) + "_tree_ID_dist_axes.las"
+        )
         self.tree_height_path = str(self.output_basepath) + "_tree_heights.las"
         self.circ_path = str(self.output_basepath) + "_circ.las"
         self.axes_path = str(self.output_basepath) + "_axes.las"

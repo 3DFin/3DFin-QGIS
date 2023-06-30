@@ -28,7 +28,9 @@ def _create_app_and_run(plugin_processing: QGISLASProcessing, scalar_fields: lis
         A list of scalar field names. These list will feed the dropdown menu
         inside the 3DFin GUI.
     """
-    plugin_widget = Application(plugin_processing, file_externally_defined=True, cloud_fields=scalar_fields)
+    plugin_widget = Application(
+        plugin_processing, file_externally_defined=True, cloud_fields=scalar_fields
+    )
     plugin_widget.show()
     loop = QEventLoop()
     plugin_widget.show()
@@ -47,7 +49,9 @@ class _3DFinQGIS:
         self.action = QAction("3DFin", self.iface.mainWindow())
         self.action.setObjectName("3DFinAction")
         self.action.setWhatsThis("Run 3DFin Plugin")
-        self.action.setStatusTip("Automatic dendrometry and forest inventory for terrestrial point clouds")
+        self.action.setStatusTip(
+            "Automatic dendrometry and forest inventory for terrestrial point clouds"
+        )
         self.action.triggered.connect(self.run)
 
         # add toolbar button and menu item
@@ -61,11 +65,19 @@ class _3DFinQGIS:
 
     def run(self):
         if self.is_running:
-            QMessageBox.information(None, "3DFin Plugin", "Another 3DFin instance is already running")
+            QMessageBox.information(
+                None, "3DFin Plugin", "Another 3DFin instance is already running"
+            )
             return
         layers = self.iface.layerTreeView().selectedLayers()
-        if len(layers) == 0 or len(layers) > 1 or layers[0].type() != QgsMapLayerType.PointCloud:
-            QMessageBox.information(None, "3DFin Plugin", "Please select a single point cloud layer")
+        if (
+            len(layers) == 0
+            or len(layers) > 1
+            or layers[0].type() != QgsMapLayerType.PointCloud
+        ):
+            QMessageBox.information(
+                None, "3DFin Plugin", "Please select a single point cloud layer"
+            )
             return
         else:
             # Shows python console. it's is needed as long as Dendromatics / 3DFin  use
@@ -89,7 +101,9 @@ class _3DFinQGIS:
             attributes = pc_layer.attributes().attributes()  # sic.
             attribute_names = [attribute.name() for attribute in attributes]
 
-            plugin_processing = QGISLASProcessing(Path(file_path), self.iface, FinConfiguration())
+            plugin_processing = QGISLASProcessing(
+                Path(file_path), self.iface, FinConfiguration()
+            )
             try:
                 _create_app_and_run(plugin_processing, attribute_names)
             except Exception as e:
