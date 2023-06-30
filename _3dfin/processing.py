@@ -1,20 +1,20 @@
 from pathlib import Path
 
 import laspy
-
-from three_d_fin.processing.standalone_processing import StandaloneLASProcessing
-from three_d_fin.processing.progress import Progress
 from qgis.core import QgsPointCloudLayer, QgsProject
+from three_d_fin.processing.progress import Progress
+from three_d_fin.processing.standalone_processing import StandaloneLASProcessing
 
 
 class QGISLASProcessing(StandaloneLASProcessing):
     """Implement the FinProcessing interface for LAS files in QGIS execution context.
-    
+
     Since we are working on filesystem/LAS files it inherit from StandaloneLAS Processing
     """
 
     def __init__(self, filename, qgis_instance, config):
         import sys
+
         self.filename = filename
         self.qgis_instance = qgis_instance
         self.progress = Progress(output=sys.stdout)
@@ -25,20 +25,18 @@ class QGISLASProcessing(StandaloneLASProcessing):
         self.output_basepath = Path(self.config.misc.output_dir) / Path(basename_las)
         self.dtm_path = str(self.output_basepath) + "_dtm_points.las"
         self.stripe_path = str(self.output_basepath) + "_stripe.las"
-        self.tree_id_dist_axes_path = (
-            str(self.output_basepath) + "_tree_ID_dist_axes.las"
-        )
+        self.tree_id_dist_axes_path = str(self.output_basepath) + "_tree_ID_dist_axes.las"
         self.tree_height_path = str(self.output_basepath) + "_tree_heights.las"
         self.circ_path = str(self.output_basepath) + "_circ.las"
         self.axes_path = str(self.output_basepath) + "_axes.las"
         self.tree_locator_path = str(self.output_basepath) + "_tree_locator.las"
-    
+
     def _load_base_cloud(self):
         self.base_cloud = laspy.read(str(self.filename))
 
-    def _load_cloud_layer(self, path: str, name: str, visible: bool = True):
+    def _load_cloud_layer(self, path: str, name: str, visible: bool):
         """Load individual an point cloud into QGIS
-        
+
         Parameters
         ----------
 
@@ -66,6 +64,6 @@ class QGISLASProcessing(StandaloneLASProcessing):
         self._load_cloud_layer(self.stripe_path, "Stems in stripe", False)
         self._load_cloud_layer(self.tree_id_dist_axes_path, "Tree_ID", False)
         self._load_cloud_layer(self.tree_height_path, "Highest points", False)
-        self._load_cloud_layer(self.circ_path, "Fitted sections")
-        self._load_cloud_layer(self.axes_path, "Axes")
+        self._load_cloud_layer(self.circ_path, "Fitted sections", True)
+        self._load_cloud_layer(self.axes_path, "Axes", True)
         self._load_cloud_layer(self.tree_locator_path, "Tree locator", False)
