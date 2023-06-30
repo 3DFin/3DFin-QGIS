@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import laspy
-import sys
 
 from three_d_fin.processing.standalone_processing import StandaloneLASProcessing
 from three_d_fin.processing.progress import Progress
@@ -14,11 +13,12 @@ class QGISLASProcessing(StandaloneLASProcessing):
     Since we are working on filesystem/LAS files it inherit from StandaloneLAS Processing
     """
 
-    def __init__(self, filename, qgis_instance):
-        super().__init__()
+    def __init__(self, filename, qgis_instance, config):
+        import sys
         self.filename = filename
         self.qgis_instance = qgis_instance
         self.progress = Progress(output=sys.stdout)
+        super().__init__(config)
 
     def _construct_output_path(self):
         basename_las = self.filename.stem
@@ -36,7 +36,7 @@ class QGISLASProcessing(StandaloneLASProcessing):
     def _load_base_cloud(self):
         self.base_cloud = laspy.read(str(self.filename))
 
-    def _load_cloud(self, path: str, name: str, visible: bool = True):
+    def _load_cloud_layer(self, path: str, name: str, visible: bool = True):
         """Load individual an point cloud into QGIS
         
         Parameters
@@ -60,16 +60,12 @@ class QGISLASProcessing(StandaloneLASProcessing):
                 node_layer = project_instance.layerTreeRoot().findLayer(layer.id())
                 node_layer.setItemVisibilityChecked(False)
 
-    def _pre_processing_hook(self):
-        return super()._pre_processing_hook()
-    
     def _post_processing_hook(self):
         """Load resulting point clouds on QGIS"""
-        self._load_cloud(self.dtm_path, "DTM", False)
-        self._load_cloud(self.stripe_path, "Stems in stripe", False)
-        self._load_cloud(self.tree_id_dist_axes_path, "Tree_ID", False)
-        self._load_cloud(self.tree_height_path, "Highest points", False)
-        self._load_cloud(self.circ_path, "Fitted sections")
-        self._load_cloud(self.axes_path, "Axes")
-        self._load_cloud(self.tree_locator_path, "Tree locator", False)
-
+        self._load_cloud_layer(self.dtm_path, "DTM", False)
+        self._load_cloud_layer(self.stripe_path, "Stems in stripe", False)
+        self._load_cloud_layer(self.tree_id_dist_axes_path, "Tree_ID", False)
+        self._load_cloud_layer(self.tree_height_path, "Highest points", False)
+        self._load_cloud_layer(self.circ_path, "Fitted sections")
+        self._load_cloud_layer(self.axes_path, "Axes")
+        self._load_cloud_layer(self.tree_locator_path, "Tree locator", False)

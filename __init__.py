@@ -3,6 +3,7 @@ from PyQt5.QtCore import QEventLoop
 from qgis.core import QgsMapLayerType, QgsApplication
 
 from three_d_fin.gui.application import Application
+from three_d_fin.processing.configuration import FinConfiguration
 
 from ._3dfin.processing import QGISLASProcessing
 
@@ -16,10 +17,14 @@ def classFactory(iface):
 def _create_app_and_run(plugin_processing: QGISLASProcessing, scalar_fields: list[str]):
     """Encapsulate the 3DFin GUI and processing.
 
+    It also embed a custom fix for the HiDPI support that is broken when using tk
+    under the CloudCompare runtime. This function allow to run the fix and the app
+    on a dedicated thread thanx to pycc.RunInThread.
+
     Parameters
     ----------
-    plugin_processing : QGISLASProcessing
-        The instance of FinProcessing dedicated to QGIS (as a plugin)
+    plugin_processing : CloudComparePluginProcessing
+        The instance of FinProcessing dedicated to CloudCompare (as a plugin)
     scalar_fields : list[str]
         A list of scalar field names. These list will feed the dropdown menu
         inside the 3DFin GUI.
@@ -82,7 +87,7 @@ class _3DFinQGIS(object):
                 self.iface.actionShowPythonDialog().trigger()
                 console._console.setVisible(console._console.isUserVisible())
             # Process events now in order to shows console before 3DFin Dialog
-            # Else 3DFin dialog could be put into the background
+            # Else 3DFin Dialog could be put into the background
             QgsApplication.instance().processEvents()
             
             self.is_running = True
@@ -95,7 +100,7 @@ class _3DFinQGIS(object):
             attributes = pc_layer.attributes().attributes()  # sic.
             attribute_names = [attribute.name() for attribute in attributes]
 
-            plugin_processing = QGISLASProcessing(Path(file_path), self.iface)
+            plugin_processing = QGISLASProcessing(Path(file_path), self.iface, FinConfiguration())
             try:
                 _create_app_and_run(plugin_processing, attribute_names)
             except Exception as e:
