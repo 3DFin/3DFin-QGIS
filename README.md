@@ -13,13 +13,17 @@ For the "possible collision in dependencies" issue, the same may apply to CloudC
 
 With HiDPI displays, it may requires at least QGIS 3.32 in order to display the QT dialog properly. On prior QGIS version the plugin works but the layout of the QT Dialog could be messed up (be smaller but still very usable) if you have a HiDPI display.
 
-Then open the OSGEO4W console and install dependencies with pip
+On Windows system you should use QGIS from [OSGEO4W network installer](https://www.qgis.org/en/site/forusers/alldownloads.html#osgeo4w-installer) and install `pip` during the installation process.
+
+Then open the OSGEO4W console and install `3DFin` and its dependencies with `pip`
 ```console
 python -m pip install 3DFin 
 ```
 
 On Linux just pip install `3DFin` and install `QGIS` from your package manager. Please refer to your distribution documentation
-to know how. On macOS the process should be roughly the same. Then clone this repository and zip the folder.
+to know how. On macOS the process should be roughly the same. 
+
+The last step is to clone this repository and zip the folder.
 
 ```console
 hatch build --target zipped-directory
